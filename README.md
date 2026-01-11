@@ -1,125 +1,141 @@
-# DevOps Assignment
+DevOps Multi-Cloud Assignment
+📌 Project Overview
 
-This project consists of a FastAPI backend and a Next.js frontend that communicates with the backend.
+This repository contains a two-tier web application (Python backend + Next.js frontend) demonstrating end-to-end DevOps skills:
 
-## Project Structure
+Backend: Python REST API (/health, /api/message) with unit tests
 
-```
-.
-├── backend/               # FastAPI backend
-│   ├── app/
-│   │   └── main.py       # Main FastAPI application
-│   └── requirements.txt    # Python dependencies
-└── frontend/              # Next.js frontend
-    ├── pages/
-    │   └── index.js     # Main page
-    ├── public/            # Static files
-    └── package.json       # Node.js dependencies
-```
+Frontend: Next.js UI calling backend APIs, with end-to-end tests
 
-## Prerequisites
+Containerized with Docker (multi-stage Dockerfiles)
 
-- Python 3.8+
-- Node.js 16+
-- npm or yarn
+Deployment on AWS ECS Fargate (attempted multi-cloud)
 
-## Backend Setup
+CI/CD automated using GitHub Actions
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
+Infrastructure provisioned via Terraform
 
-2. Create a virtual environment (recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-   ```
+Monitoring, alerting, and security best practices implemented
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+⚠️ Note: Due to billing/ToS issues, GCP and Azure deployments were not completed. AWS ECS deployment is functional.
 
-4. Run the FastAPI server:
-   ```bash
-   uvicorn app.main:app --reload --port 8000
-   ```
+📂 Repository Structure
+├── backend/                # Python Flask/FastAPI backend
+│   ├── app.py
+│   ├── requirements.txt
+│   └── tests/
+├── frontend/               # Next.js frontend
+│   ├── pages/
+│   ├── package.json
+│   └── tests/
+├── terraform/              # Terraform infrastructure configs
+│   ├── aws/
+│   └── modules/
+├── .github/workflows/      # GitHub Actions CI/CD workflows
+├── Dockerfile.backend
+├── Dockerfile.frontend
+└── README.md
 
-   The backend will be available at `http://localhost:8000`
+⚙️ Prerequisites
 
-## Frontend Setup
+Git & GitHub
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
+Docker & Docker Compose
 
-2. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn
-   ```
+Terraform
 
-3. Configure the backend URL (if different from default):
-   - Open `.env.local`
-   - Update `NEXT_PUBLIC_API_URL` with your backend URL
-   - Example: `NEXT_PUBLIC_API_URL=https://your-backend-url.com`
+AWS CLI (configured with credentials)
 
-4. Run the development server:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+Python 3.9+ & Node.js 18+
 
-   The frontend will be available at `http://localhost:3000`
+🛠️ Running Locally
+Backend
+cd backend
+python -m venv venv
+source venv/bin/activate   # (Linux/Mac) or venv\Scripts\activate (Windows)
+pip install -r requirements.txt
+python app.py
 
-## Changing the Backend URL
+Frontend
+cd frontend
+npm install
+npm run dev
 
-To change the backend URL that the frontend connects to:
+🐳 Dockerization
+Backend Docker
+docker build -t frontenddevopsassignmentsan:backend ./backend
+docker run -p 5000:5000 frontenddevopsassignmentsan:backend
 
-1. Open the `.env.local` file in the frontend directory
-2. Update the `NEXT_PUBLIC_API_URL` variable with your new backend URL
-3. Save the file
-4. Restart the Next.js development server for changes to take effect
+Frontend Docker
+docker build -t frontenddevopsassignmentsan:frontend ./frontend
+docker run -p 3000:3000 frontenddevopsassignmentsan:frontend
 
-Example:
-```
-NEXT_PUBLIC_API_URL=https://your-new-backend-url.com
-```
+📦 CI/CD Pipeline
 
-## For deployment:
-   ```bash
-   npm run build
-   # or
-   yarn build
-   ```
+Trigger: Push to develop branch
 
-   AND
+Pipeline Steps:
 
-   ```bash
-   npm run start
-   # or
-   yarn start
-   ```
+Checkout code
 
-   The frontend will be available at `http://localhost:3000`
+Run backend & frontend tests
 
-## Testing the Integration
+Build Docker images
 
-1. Ensure both backend and frontend servers are running
-2. Open the frontend in your browser (default: http://localhost:3000)
-3. If everything is working correctly, you should see:
-   - A status message indicating the backend is connected
-   - The message from the backend: "You've successfully integrated the backend!"
-   - The current backend URL being used
+Tag images with Git SHA
 
-## API Endpoints
+Push to AWS ECR
 
-- `GET /api/health`: Health check endpoint
-  - Returns: `{"status": "healthy", "message": "Backend is running successfully"}`
+Deployment: On merge to main, automatically deploys ECS tasks to AWS
 
-- `GET /api/message`: Get the integration message
-  - Returns: `{"message": "You've successfully integrated the backend!"}`
+☁️ Infrastructure as Code
+
+Terraform Modules: Reusable modules for ECS cluster, tasks, security groups, and VPC
+
+AWS ECS Fargate: Backend & frontend deployed as services
+
+Networking: Default VPC + public subnets + security groups
+
+Load Balancer: Not deployed due to account restrictions; public IP used
+
+📊 Monitoring & Alerts
+
+CloudWatch metrics: CPU, Memory, Request count / latency
+
+Alerts: CPU > 70% triggers email notification
+
+Evidence: Screenshots of monitoring dashboards stored in docs/screenshots
+
+🔐 Security & IAM
+
+Least privilege IAM roles
+
+Secrets stored in AWS Secrets Manager
+
+No secrets stored in Git, Docker images, or CI logs
+
+Security groups restrict access to only required ports (80/443 for frontend, 5000 for backend)
+
+📌 Notes / Limitations
+
+AWS deployment fully functional
+
+GCP project blocked due to billing / Terms of Service acceptance
+
+Azure deployment blocked due to billing restrictions
+
+Load balancer not created; ECS tasks accessed via public IP
+
+✅ Deliverables
+Task	Status	Evidence
+Git Repo & Branches	✅	GitHub history
+Docker Images	✅	AWS ECR URLs
+Terraform Infrastructure	✅	Terraform plan/apply
+CI/CD Pipeline	✅	GitHub Actions logs
+Monitoring & Alerts	✅	CloudWatch screenshots
+Security & IAM	✅	Secrets proof screenshot
+Load Balancing / Resiliency	⚠️	ECS tasks screenshot
+Demo Video	✅	Link to video
+📹 Demo Video
+
+Demo Video Link
