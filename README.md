@@ -1,141 +1,103 @@
-DevOps Multi-Cloud Assignment
-📌 Project Overview
+# DevOps Multi-Cloud Assignment - My Implementation
 
-This repository contains a two-tier web application (Python backend + Next.js frontend) demonstrating end-to-end DevOps skills:
+## Overview
+This repository contains my implementation of a two-tier web application (Python backend + Next.js frontend) deployed on cloud platforms. The focus is on containerization, CI/CD, Terraform-based infrastructure, monitoring, and security.
 
-Backend: Python REST API (/health, /api/message) with unit tests
+---
 
-Frontend: Next.js UI calling backend APIs, with end-to-end tests
+## 1. Project Setup
+- Repository cloned from the provided codebase.
+- Branching strategy followed:
+  - `main` – production-ready
+  - `develop` – integration
+  - `feature/*` – specific tasks
+- Git commits are meaningful and traceable.
 
-Containerized with Docker (multi-stage Dockerfiles)
+---
 
-Deployment on AWS ECS Fargate (attempted multi-cloud)
+## 2. Backend
+- Framework used: Python Flask
+- APIs implemented:
+  - `/health`
+  - `/api/message`
+- Unit tests: 2 tests using `pytest`
+- Dockerized with a multi-stage Dockerfile:
+  - Non-root user
+  - Small image size
+  - Environment-based configuration
 
-CI/CD automated using GitHub Actions
+---
 
-Infrastructure provisioned via Terraform
+## 3. Frontend
+- Framework used: Next.js
+- Calls backend APIs for data
+- End-to-end tests implemented using Jest (2 tests)
+- Dockerized with multi-stage Dockerfile
 
-Monitoring, alerting, and security best practices implemented
+---
 
-⚠️ Note: Due to billing/ToS issues, GCP and Azure deployments were not completed. AWS ECS deployment is functional.
+## 4. CI/CD
+- GitHub Actions used for CI/CD:
+  - Backend and frontend tests run on push to `develop`
+  - Docker images built and tagged with Git SHA
+  - Pushed to AWS ECR
+- Automatic deployment to AWS ECS (Fargate)
+- **Notes:** GCP and Azure deployment blocked due to billing issues
 
-📂 Repository Structure
-├── backend/                # Python Flask/FastAPI backend
-│   ├── app.py
-│   ├── requirements.txt
-│   └── tests/
-├── frontend/               # Next.js frontend
-│   ├── pages/
-│   ├── package.json
-│   └── tests/
-├── terraform/              # Terraform infrastructure configs
-│   ├── aws/
-│   └── modules/
-├── .github/workflows/      # GitHub Actions CI/CD workflows
-├── Dockerfile.backend
-├── Dockerfile.frontend
-└── README.md
+---
 
-⚙️ Prerequisites
+## 5. Cloud Deployment
 
-Git & GitHub
+### AWS
+- ECS Fargate used for container deployment
+- Security groups configured:
+  - Frontend: `sg-0415858d8e2116f`
+  - ALB: `sg-01a292cf4e10f7559`
+- VPC and subnet configured
+- Service Discovery used for backend/frontend communication
 
-Docker & Docker Compose
+### Issues Faced
+- Unable to create ALB due to account limitations:  
+  `OperationNotPermitted: This AWS account currently does not support creating load balancers`
+- Security group conflicts when adding rules:  
+  `InvalidPermission.Duplicate` errors
+- GCP project creation failed due to unaccepted Terms of Service
+- Azure account blocked due to billing restrictions
 
-Terraform
+---
 
-AWS CLI (configured with credentials)
+## 6. Monitoring & Logging
+- Monitoring dashboards configured in AWS CloudWatch
+- Alerts configured for CPU > 70% for 5 minutes (Email notification)
+- Logs collected from ECS tasks
 
-Python 3.9+ & Node.js 18+
+---
 
-🛠️ Running Locally
-Backend
-cd backend
-python -m venv venv
-source venv/bin/activate   # (Linux/Mac) or venv\Scripts\activate (Windows)
-pip install -r requirements.txt
-python app.py
+## 7. Security
+- IAM roles followed least privilege principle
+- Secrets stored in AWS Secrets Manager
+- No secrets exposed in Git, Docker images, or CI logs
+- Network ingress/egress documented
 
-Frontend
-cd frontend
-npm install
-npm run dev
+---
 
-🐳 Dockerization
-Backend Docker
-docker build -t frontenddevopsassignmentsan:backend ./backend
-docker run -p 5000:5000 frontenddevopsassignmentsan:backend
+## 8. Load Balancing & Resiliency
+- Attempted to configure ALB (blocked due to account)
+- ECS tasks configured with multiple replicas
+- Service discovery used for inter-container routing
 
-Frontend Docker
-docker build -t frontenddevopsassignmentsan:frontend ./frontend
-docker run -p 3000:3000 frontenddevopsassignmentsan:frontend
+---
 
-📦 CI/CD Pipeline
+## 9. Lessons Learned
+- Multi-cloud deployments require active billing accounts
+- Security group and ALB limitations can block deployments
+- ECS service discovery can be used without a load balancer for small projects
 
-Trigger: Push to develop branch
+---
 
-Pipeline Steps:
+## 10. Evidence
+- CI/CD logs (available in `.github/workflows`)
+- Terraform output for AWS ECS and networking
+- CloudWatch dashboard screenshots
+- Docker images pushed to AWS ECR
 
-Checkout code
-
-Run backend & frontend tests
-
-Build Docker images
-
-Tag images with Git SHA
-
-Push to AWS ECR
-
-Deployment: On merge to main, automatically deploys ECS tasks to AWS
-
-☁️ Infrastructure as Code
-
-Terraform Modules: Reusable modules for ECS cluster, tasks, security groups, and VPC
-
-AWS ECS Fargate: Backend & frontend deployed as services
-
-Networking: Default VPC + public subnets + security groups
-
-Load Balancer: Not deployed due to account restrictions; public IP used
-
-📊 Monitoring & Alerts
-
-CloudWatch metrics: CPU, Memory, Request count / latency
-
-Alerts: CPU > 70% triggers email notification
-
-Evidence: Screenshots of monitoring dashboards stored in docs/screenshots
-
-🔐 Security & IAM
-
-Least privilege IAM roles
-
-Secrets stored in AWS Secrets Manager
-
-No secrets stored in Git, Docker images, or CI logs
-
-Security groups restrict access to only required ports (80/443 for frontend, 5000 for backend)
-
-📌 Notes / Limitations
-
-AWS deployment fully functional
-
-GCP project blocked due to billing / Terms of Service acceptance
-
-Azure deployment blocked due to billing restrictions
-
-Load balancer not created; ECS tasks accessed via public IP
-
-✅ Deliverables
-Task	Status	Evidence
-Git Repo & Branches	✅	GitHub history
-Docker Images	✅	AWS ECR URLs
-Terraform Infrastructure	✅	Terraform plan/apply
-CI/CD Pipeline	✅	GitHub Actions logs
-Monitoring & Alerts	✅	CloudWatch screenshots
-Security & IAM	✅	Secrets proof screenshot
-Load Balancing / Resiliency	⚠️	ECS tasks screenshot
-Demo Video	✅	Link to video
-📹 Demo Video
-
-Demo Video Link
