@@ -101,3 +101,8 @@ This repository contains my implementation of a two-tier web application (Python
 - CloudWatch dashboard screenshots
 - Docker images pushed to AWS ECR
 
+---
+
+## 11. Structure Diagram
+<img width="850" height="459" alt="image" src="https://github.com/user-attachments/assets/0b82f2ba-7ec9-45a6-a146-29f83afb3084" />
+
